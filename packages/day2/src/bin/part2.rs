@@ -65,11 +65,7 @@ impl Hand {
     }
 
     fn get_losing_hand(&self) -> Hand {
-        match self {
-            Hand::Rock => Hand::Scissor,
-            Hand::Paper => Hand::Rock,
-            Hand::Scissor => Hand::Paper,
-        }
+        self.get_counter_hand().get_counter_hand()
     }
 }
 
