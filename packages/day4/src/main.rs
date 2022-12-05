@@ -1,4 +1,5 @@
 use std::{
+    cmp::{max, min},
     fs,
     ops::{Deref, RangeInclusive},
     str::Split,
@@ -16,6 +17,22 @@ fn main() {
         let right = str_to_inclusive_range(s[1]);
         if is_fully_contained(&left, &right) {
             sum += 1;
+        }
+    }
+
+    println!("Fully contained sectors pairs: {}", sum);
+
+    // Part 1.1
+    sum = 0;
+
+    for line in &input {
+        let s: Vec<&str> = split_group(*line).collect();
+        let left = str_to_inclusive_range(s[0]);
+        let right = str_to_inclusive_range(s[1]);
+        if let Some(x) = get_overlap(&left, &right) {
+            if x == left || x == right {
+                sum += 1;
+            }
         }
     }
 
@@ -65,19 +82,16 @@ fn get_overlap(
     left: &RangeInclusive<usize>,
     right: &RangeInclusive<usize>,
 ) -> Option<RangeInclusive<usize>> {
-    fn get_overlap(
-        left: &RangeInclusive<usize>,
-        right: &RangeInclusive<usize>,
-    ) -> Option<RangeInclusive<usize>> {
-        if left.end() >= right.start() {
-            return Some(*left.start()..=*right.end());
-        }
-        None
+    fn are_overlapping(left: &RangeInclusive<usize>, right: &RangeInclusive<usize>) -> bool {
+        max(left.start(), right.start()) <= min(left.end(), right.end())
     }
 
-    if left.start() < right.start() {
-        return get_overlap(left, right);
+    if !are_overlapping(left, right) {
+        return None;
     }
 
-    get_overlap(right, left)
+    let largest_min = max(left.start(), right.start());
+    let smallest_max = min(left.end(), right.end());
+
+    Some(*largest_min..=*smallest_max)
 }
