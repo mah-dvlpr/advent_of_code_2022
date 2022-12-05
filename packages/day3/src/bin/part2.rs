@@ -3,12 +3,12 @@ use std::fs;
 use std::io::{BufRead, BufReader};
 
 fn main() {
-    let file = fs::File::open("packages/day3/resources/input_simple_part2").unwrap();
-    let lines = BufReader::new(file).lines();
+    let file = fs::read_to_string("packages/day3/resources/input_simple_part2").unwrap();
+    let lines: Vec<&str> = file.split('\n').collect();
     let mut sum = 0;
 
-    for line in lines {
-        sum += duplicate_value(&line.unwrap());
+    for line in &lines {
+        sum += duplicate_value(&line);
     }
 
     println!("{}", sum);
@@ -16,6 +16,8 @@ fn main() {
     let mut count = 1;
     let mut dat = String::new();
     for line in &lines {
+        dat.push_str(line);
+
         if count % 3 == 0 {
             count = 1;
         } else {
