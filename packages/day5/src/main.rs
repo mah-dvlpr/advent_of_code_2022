@@ -3,12 +3,13 @@ use std::fs;
 type Layout = Vec<Vec<char>>;
 
 fn main() {
-    let input = fs::read_to_string("packages/day5/resources/input_example").unwrap();
+    let input = fs::read_to_string("packages/day5/resources/input").unwrap();
     let data: Vec<&str> = input.split("\n\n").collect();
     let layout_str = data[0];
     let procedure = data[1];
     let mut layout = init_layout(layout_str);
     run_procedure(&mut layout, &procedure);
+    println!("Layout: {:?}", layout);
 }
 
 fn init_layout(layout_str: &str) -> Layout {
@@ -66,7 +67,20 @@ fn init_layout(layout_str: &str) -> Layout {
 }
 
 fn run_procedure(layout: &mut Layout, procedure: &str) {
-    println!("{}", procedure);
+    for step in procedure.lines() {
+        let parts_str: Vec<&str> = step.split_whitespace().collect();
+        move_crates(
+            layout,
+            parts_str[3].parse::<usize>().unwrap(),
+            parts_str[5].parse::<usize>().unwrap(),
+            parts_str[1].parse::<usize>().unwrap(),
+        );
+    }
 }
 
-fn move_crates(layout: &Layout, from: usize, to: usize, amount: usize) {}
+fn move_crates(layout: &mut Layout, from: usize, to: usize, amount: usize) {
+    for _ in 0..amount {
+        let current_crate = layout[from - 1].pop().unwrap();
+        layout[to - 1].push(current_crate);
+    }
+}
