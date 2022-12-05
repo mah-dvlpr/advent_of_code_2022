@@ -7,8 +7,8 @@ fn main() {
     let data: Vec<&str> = input.split("\n\n").collect();
     let layout_str = data[0];
     let procedure = data[1];
-    let layout = init_layout(layout_str);
-    println!("{:?}", layout);
+    let mut layout = init_layout(layout_str);
+    run_procedure(&mut layout, &procedure);
 }
 
 fn init_layout(layout_str: &str) -> Layout {
@@ -63,6 +63,10 @@ fn init_layout(layout_str: &str) -> Layout {
     }
 
     layout
+}
+
+fn run_procedure(layout: &mut Layout, procedure: &str) {
+    println!("{}", procedure);
 }
 
 fn move_crates(layout: &Layout, from: usize, to: usize, amount: usize) {}
