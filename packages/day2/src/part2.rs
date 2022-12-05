@@ -2,15 +2,21 @@ use std::fs;
 use std::io::{BufRead, BufReader};
 
 fn main() {
-    let file = fs::File::open("packages/day2/resources/input_real").unwrap();
+    let file = fs::File::open("packages/day2/resources/input").unwrap();
     let lines = BufReader::new(file).lines();
     let mut points: usize = 0;
 
     for line in lines {
         let line: Vec<char> = line.unwrap().chars().collect();
 
+        let action = &line[2];
         let their = Hand::get_type(&line[0]);
-        let our = Hand::get_type(&line[2]);
+        let our = match action {
+            'X' => their.get_losing_hand(),
+            'Y' => their,
+            'Z' => their.get_counter_hand(),
+            _ => unreachable!(),
+        };
 
         points += get_points(&get_result(&our, &their));
         points += Hand::get_points(&our);
@@ -19,6 +25,7 @@ fn main() {
     println!("Total score: {}", points);
 }
 
+#[derive(Clone, Copy)]
 enum Hand {
     Rock,
     Paper,
@@ -32,22 +39,11 @@ enum Result {
 }
 
 impl Hand {
-    fn get_symbol(&self, first: &bool) -> char {
-        match (self, first) {
-            (Hand::Rock, true) => 'A',
-            (Hand::Paper, true) => 'B',
-            (Hand::Scissor, true) => 'C',
-            (Hand::Rock, false) => 'X',
-            (Hand::Paper, false) => 'Y',
-            (Hand::Scissor, false) => 'Z',
-        }
-    }
-
     fn get_type(c: &char) -> Hand {
         match c {
-            'A' | 'X' => Hand::Rock,
-            'B' | 'Y' => Hand::Paper,
-            'C' | 'Z' => Hand::Scissor,
+            'A' => Hand::Rock,
+            'B' => Hand::Paper,
+            'C' => Hand::Scissor,
             _ => unreachable!(),
         }
     }
@@ -58,6 +54,18 @@ impl Hand {
             Hand::Paper => 2,
             Hand::Scissor => 3,
         }
+    }
+
+    fn get_counter_hand(&self) -> Hand {
+        match self {
+            Hand::Rock => Hand::Paper,
+            Hand::Paper => Hand::Scissor,
+            Hand::Scissor => Hand::Rock,
+        }
+    }
+
+    fn get_losing_hand(&self) -> Hand {
+        self.get_counter_hand().get_counter_hand()
     }
 }
 

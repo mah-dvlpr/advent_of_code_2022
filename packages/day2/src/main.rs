@@ -2,15 +2,30 @@ use std::fs;
 use std::io::{BufRead, BufReader};
 
 fn main() {
-    let file = fs::File::open("packages/day2/resources/input_real").unwrap();
-    let lines = BufReader::new(file).lines();
+    let input = fs::read_to_string("packages/day2/resources/input").unwrap();
+    let lines: Vec<&str> = input.split("\n").collect();
     let mut points: usize = 0;
 
-    for line in lines {
-        let line: Vec<char> = line.unwrap().chars().collect();
+    // Part 1
+    for line in &lines {
+        let line: Vec<char> = line.chars().collect();
+
+        let their = Hand::get_type_part1(&line[0]);
+        let our = Hand::get_type_part1(&line[2]);
+
+        points += get_points(&get_result(&our, &their));
+        points += Hand::get_points(&our);
+    }
+
+    println!("Total score: {}", points);
+
+    // Part 2
+    points = 0;
+    for line in &lines {
+        let line: Vec<char> = line.chars().collect();
 
         let action = &line[2];
-        let their = Hand::get_type(&line[0]);
+        let their = Hand::get_type_part2(&line[0]);
         let our = match action {
             'X' => their.get_losing_hand(),
             'Y' => their,
@@ -39,7 +54,16 @@ enum Result {
 }
 
 impl Hand {
-    fn get_type(c: &char) -> Hand {
+    fn get_type_part1(c: &char) -> Hand {
+        match c {
+            'A' | 'X' => Hand::Rock,
+            'B' | 'Y' => Hand::Paper,
+            'C' | 'Z' => Hand::Scissor,
+            _ => unreachable!(),
+        }
+    }
+
+    fn get_type_part2(c: &char) -> Hand {
         match c {
             'A' => Hand::Rock,
             'B' => Hand::Paper,
