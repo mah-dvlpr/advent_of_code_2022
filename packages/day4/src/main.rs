@@ -48,7 +48,7 @@ fn str_to_inclusive_range(s: &str) -> RangeInclusive<usize> {
 }
 
 fn is_fully_contained(left: &RangeInclusive<usize>, right: &RangeInclusive<usize>) -> bool {
-    fn _fully_contained(left: &RangeInclusive<usize>, right: &RangeInclusive<usize>) -> bool {
+    fn fully_contained(left: &RangeInclusive<usize>, right: &RangeInclusive<usize>) -> bool {
         for e in left.clone() {
             if !right.contains(&e) {
                 break;
@@ -58,14 +58,14 @@ fn is_fully_contained(left: &RangeInclusive<usize>, right: &RangeInclusive<usize
         }
         false
     }
-    _fully_contained(left, right) || _fully_contained(right, left)
+    fully_contained(left, right) || fully_contained(right, left)
 }
 
 fn get_overlap(
     left: &RangeInclusive<usize>,
     right: &RangeInclusive<usize>,
 ) -> Option<RangeInclusive<usize>> {
-    fn _get_overlap(
+    fn get_overlap(
         left: &RangeInclusive<usize>,
         right: &RangeInclusive<usize>,
     ) -> Option<RangeInclusive<usize>> {
@@ -76,8 +76,8 @@ fn get_overlap(
     }
 
     if left.start() < right.start() {
-        return _get_overlap(left, right);
+        return get_overlap(left, right);
     }
 
-    _get_overlap(right, left)
+    get_overlap(right, left)
 }
