@@ -8,6 +8,7 @@ fn main() {
     println!("{}", find_marker_index(&input, 4).unwrap());
 
     // Part 2
+    println!("{}", find_marker_index(&input, 14).unwrap());
 }
 
 fn find_marker_index(data: &str, len: usize) -> Option<usize> {
@@ -21,6 +22,7 @@ fn find_marker_index(data: &str, len: usize) -> Option<usize> {
             if !set.insert(window[i]) {
                 break;
             } else if i == len - 1 {
+                // Marker found
                 return Some(iterations + len);
             }
         }
