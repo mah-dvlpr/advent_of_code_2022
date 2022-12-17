@@ -13,6 +13,8 @@ fn main() {
         .collect();
 
     // Part 1
+    let mut v: Vec<usize> = Vec::new();
+    v.push(500);
     println!(
         "The most calories carried by one elf is: {} [Calories]",
         elf_calories.iter().max().unwrap()
